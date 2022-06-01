@@ -1,4 +1,5 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE QuantifiedConstraints #-}
 module Data.Format
     ( Productish(..)
     , Summish(..)
@@ -33,6 +34,7 @@ import Data.Void
 import Data.Char
 import Text.ParserCombinators.ReadP
 
+import GHC.Types (Total)
 
 #if MIN_VERSION_base(4,8,0)
 #else
@@ -48,7 +50,7 @@ enumMap :: (IsoVariant f,Enum a) => f Int -> f a
 enumMap = isoMap toEnum fromEnum
 
 infixr 3 <**>, **>, <**
-class IsoVariant f => Productish f where
+class (Total f, IsoVariant f) => Productish f where
     pUnit :: f ()
     (<**>) :: f a -> f b -> f (a,b)
     (**>) ::  f () -> f a -> f a
